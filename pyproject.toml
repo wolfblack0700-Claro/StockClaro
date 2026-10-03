@@ -1,13 +1,11 @@
 [project]
-name = "blank-app-template"
+name = "stockclaro"
 version = "0.1.0"
-description = "A simple Streamlit app template."
-readme = "README.md"
-requires-python = ">=3.9"
+description = "StockClaro app"
+requires-python = ">=3.11,<3.13"
 dependencies = [
+    "streamlit",
     "supabase",
-    "streamlit>=1.61.1",
 ]
-
 [tool.uv]
 package = false
