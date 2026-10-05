@@ -11,7 +11,7 @@ if os.path.exists("logo.png"):
     with col2:
         st.markdown("<h1 style='margin-top:15px;'> StockClaro</h1>", unsafe_allow_html=True)
 else:
-    st.title("#")
+    st.title("StockClaro")
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -77,7 +77,7 @@ if not st.session_state.user and st.session_state.get("login_open"):
     st.stop()
 
 if not st.session_state.user:
-    st.title("📦 StockClaro"); st.info("Inicia sesión o crea tu cuenta desde el menú izquierdo.")
+    st.info("Inicia sesión o crea tu cuenta desde el menú izquierdo.")
     st.stop()
 
 user = st.session_state.user; uid = user.id
