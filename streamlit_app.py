@@ -327,6 +327,29 @@ elif menu=="Entradas/Salidas":
                     st.success("Salida registrada")
                     st.cache_data.clear()
                     st.rerun()
+elif menu == "Historial de movimientos":
+    st.header("Historial de movimientos")
+    
+    movs = get_movs(uid_view)
+    
+    if not movs:
+        st.info("Sin movimientos aún")
+    else:
+        # Filtro por tipo
+        tipos = ["Todos", "entrada", "salida", "edicion", "agregado_stock", "caducado", "baja"]
+        f = st.selectbox("Filtrar por tipo", tipos)
+        
+        if f != "Todos":
+            movs = [m for m in movs if m.get("tipo") == f]
+        
+        for m in movs:
+            prod = m.get("productos", {}).get("nombre", "") if m.get("productos") else ""
+            col1, col2, col3, col4 = st.columns([3,2,2,4])
+            col1.write(f"**{prod}**")
+            col2.write(f"{m.get('tipo','')}")
+            col3.write(f"{m.get('cantidad','')}")
+            col4.write(f"{str(m.get('created_at',''))[:16]} - {m.get('detalle','')}")
+            st.divider()
 elif menu=="Separados":
         st.header("Separados")
         st.write("Bloque Separados OK")
