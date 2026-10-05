@@ -5,7 +5,13 @@ from datetime import date, timedelta
 import os
 st.set_page_config(page_title="StockClaro", layout="wide")
 if os.path.exists("logo.png"):
-    st.image("logo.png", width=90)
+    col1, col2 = st.columns([1, 5])
+    with col1:
+        st.image("logo.png", width=90)
+    with col2:
+        st.markdown("<h1 style='margin-top:15px;'>📦 StockClaro</h1>", unsafe_allow_html=True)
+else:
+    st.title("📦 StockClaro")
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
