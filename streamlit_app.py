@@ -2,11 +2,13 @@ import streamlit as st
 from supabase import create_client
 import pandas as pd
 from datetime import date, timedelta
-
+import os
+st.set_page_config(page_title="StockClaro", layout="wide")
+if os.path.exists("logo.png"):
+    st.image("logo.png", width=90)
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-st.set_page_config(page_title="StockClaro", layout="wide")
 @st.cache_data(ttl=3600)
 def get_prods(uid):
     try:
