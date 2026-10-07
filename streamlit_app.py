@@ -8,8 +8,12 @@ st.set_page_config(page_title="StockClaro", layout="wide", initial_sidebar_state
 
 st.markdown("""
 <style>
-#MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
+
+/* QUITA SOLO LÁPIZ Y GATITO */
+header a[href*="github"] {display: none!important;}
+[data-testid="stToolbar"] div:nth-child(3) {display: none!important;}
+[data-testid="stToolbar"] div:nth-child(4) {display: none!important;}
 </style>
 """, unsafe_allow_html=True)
 if os.path.exists("logo.png"):
