@@ -10,9 +10,8 @@ st.markdown("""
 <style>
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
-[data-testid="stToolbar"] {visibility: hidden !important; display: none !important;}
-[data-testid="stDecoration"] {display:none;}
-.stDeployButton {display:none !important;}
+[data-testid="stToolbar"] {display: none !important;}
+.stDeployButton {display: none !important;}
 </style>
 """, unsafe_allow_html=True)
 if os.path.exists("logo.png"):
