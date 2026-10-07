@@ -3,7 +3,15 @@ from supabase import create_client
 import pandas as pd
 from datetime import date, timedelta
 import os
-st.set_page_config(page_title="StockClaro", layout="wide")
+st.set_page_config(page_title="StockClaro", layout="wide", initial_sidebar_state="collapsed")
+st.markdown("""
+<style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+[data-testid="stToolbar"] {visibility: hidden!important; display:none!important;}
+.stDeployButton {display:none;}
+""", unsafe_allow_html=True)
 if os.path.exists("logo.png"):
     col1, col2 = st.columns([1, 5])
     with col1:
