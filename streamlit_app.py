@@ -92,7 +92,14 @@ if not st.session_state.user:
     st.info("Inicia sesión o crea tu cuenta desde el menú izquierdo.")
     st.stop()
 
-user = st.session_state.user; uid = user.id
+# Línea 95 - FIX para error NoneType
+if "user" not in st.session_state or st.session_state.user is None:
+    st.warning("Inicia sesión para ver StockClaro")
+    st.stop()
+
+user = st.session_state.user
+uid = user.id
+uid_view = uid  # asegúrate que uid_view use el mismo
 prof = supabase.table("profiles").select("*").eq("id", uid).single().execute().data
 rol = prof.get("rol", "cliente") if prof else "cliente"
 
@@ -206,28 +213,38 @@ elif menu == "Caducidad":
             fc = m.get("fecha_caducidad")
             if not fc:
                 continue
+        
+            from datetime import datetime
+
             try:
-                from datetime import datetime
                 f_date = datetime.fromisoformat(str(fc).replace("Z", "")).date()
                 dias = (f_date - hoy).days
                 nombre = m["productos"]["nombre"] if m.get("productos") else "?"
                 cant_lote = m["cantidad"]
+    
                 if dias <= 0:
-                    st.markdown(f'<div style="background-color:#d3d3d3;padding:10px;border-radius:10px;margin-bottom:5px">⚫ {nombre} - {f_date} (CADUCADO) - Lote: {cant_lote}</div>', unsafe_allow_html=True)
-                    if st.button("🗑️ Dar de baja lote caducado", key=f"del_{m['id']}"):
-                        prod_id = m["productos"]["id"]
-                        stock_actual = m["productos"]["stock"] or 0
-                        nuevo_stock = max(0, stock_actual - cant_lote)
-                        supabase.table("productos").update({"stock": nuevo_stock}).eq("id", prod_id).execute()
-                        supabase.table("movimientos").delete().eq("id", m["id"]).execute()
-                        st.success("Lote caducado eliminado")
-                        st.rerun()
-                elif dias <= 20:
-                    st.error(f"🔴 {nombre} - {f_date} ({dias} días) - Lote: {cant_lote}")
-                elif dias <= 60:
-                    st.warning(f"🟡 {nombre} - {f_date} ({dias} días) - Lote: {cant_lote}")
+                    st.markdown(f'<div style="background-color:#d3d3d3;padding:10px;border-radius:10px;">🔴 CADUCADO: {nombre} - {f_date} - Lote: {cant_lote}</div>', unsafe_allow_html=True)
+                if st.button(f"🗑️ Dar de baja lote caducado", key=f"del_{m['id']}"):
+                    prod_id = m["productos"]["id"]
+                    stock_actual = m["productos"]["stock"] or 0
+                    nuevo_stock = max(0, stock_actual - cant_lote)
+                    supabase.table("productos").update({"stock": nuevo_stock}).eq("id", prod_id).execute()
+                    supabase.table("movimientos").delete().eq("id", m["id"]).execute()
+                    st.success("Lote caducado eliminado - Merma anormal deducible LISR Art.27")
+                    st.rerun()
+            
+                elif dias <= 7:  # NIF C-4 Deterioro
+                    st.error(f"🔴 {nombre} - {f_date} ({dias} días) - Lote: {cant_lote} - DETERIORO 50% VNR")
+        
+                elif dias <= 20:  # Tu nueva alerta >7 días
+                    st.error(f"🟠 {nombre} - {f_date} ({dias} días) - Lote: {cant_lote} - Por caducar 20 días")
+        
+                elif dias <= 60:  # Vigilancia extendida
+                    st.warning(f"🟡 {nombre} - {f_date} ({dias} días) - Lote: {cant_lote} - En vigilancia 60 días")
+        
                 else:
-                    st.success(f"🟢 {nombre} - {f_date} ({dias} días) - Lote: {cant_lote}")
+                    st.success(f"🟢 {nombre} - {f_date} ({dias} días) - Lote: {cant_lote} - Vigente")
+
             except Exception:
                 continue
 
